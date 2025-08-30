@@ -1,0 +1,34 @@
+{
+  "words": [
+    "bignum",
+    "cachix",
+    "errexit",
+    "fourmolu",
+    "hackage",
+    "inplace",
+    "installdir",
+    "kakkun",
+    "kazuki",
+    "mktemp",
+    "newstyle",
+    "nixos",
+    "nixpkgs",
+    "noindex",
+    "okamoto",
+    "pkgs",
+    "popd",
+    "pushd",
+    "sdist",
+    "shellcheck",
+    "stdenv",
+    "topo"
+  ],
+  "ignorePaths": [
+    ".cspell.json",
+    ".gitignore",
+    ".local-repository",
+    "dist-newstyle",
+    "flake.lock",
+    "result"
+  ]
+}

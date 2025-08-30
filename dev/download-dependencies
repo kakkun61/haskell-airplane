@@ -1,0 +1,55 @@
+#!/bin/bash
+
+if [ -z "$BASH_VERSION" ]
+then
+  echo "This script requires bash."
+  exit 1
+fi
+
+set -o errexit
+
+repository_path=.local-repository
+
+verbose=0
+if [ "$1" == "-v" ]
+then
+  verbose=1
+  shift
+fi
+
+function log_verbose {
+  if [ $verbose -eq 1 ]
+  then
+    echo "$@"
+  fi
+}
+
+log_verbose download-dependencies
+
+dependencies=$(cabal-plan topo --hide-builtin | grep -v ' ')
+
+log_verbose dependencies:
+for d in $dependencies
+do
+  log_verbose -e "\t$d"
+done
+
+temp_dir=$(mktemp --directory --tmpdir haskell-airplane.download-dependencies.XXXXXX)
+trap 'rm -rf $temp_dir' EXIT
+log_verbose created temporary directory: "$temp_dir"
+
+pushd "$temp_dir"
+for d in $dependencies
+do
+  url=https://hackage.haskell.org/package/$d/$d.tar.gz
+  if [ $verbose -eq 0 ]
+  then
+    wget --quiet "$url"
+  else
+    wget --no-verbose "$url"
+  fi
+done
+popd
+
+log_verbose copying repository
+cp -r "$temp_dir"/* "$repository_path"
