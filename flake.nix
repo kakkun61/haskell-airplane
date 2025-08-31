@@ -66,6 +66,8 @@
         {
           packages.default = example-project;
 
+          formatter = pkgs.nixpkgs-fmt;
+
           devShells.default = pkgs.mkShell {
             packages = with pkgs; [
               haskell.compiler.ghc984
