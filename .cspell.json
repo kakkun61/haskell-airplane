@@ -16,6 +16,7 @@
     "noindex",
     "okamoto",
     "pkgs",
+    "pname",
     "popd",
     "pushd",
     "sdist",
