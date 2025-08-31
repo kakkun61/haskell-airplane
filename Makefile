@@ -39,7 +39,7 @@ lint-shell:
 
 .PHONY: download-dependencies
 download-dependencies:
-	dev/download-dependencies
+	dev/download-dependencies -o .local-repository
 
 .PHONY: clean-local-repository
 clean-local-repository:

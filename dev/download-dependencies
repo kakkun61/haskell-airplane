@@ -6,16 +6,42 @@ then
   exit 1
 fi
 
-set -o errexit
+set -o errexit -o nounset -o pipefail
 
-repository_path=.local-repository
+function usage {
+  echo "Usage: $(basename "$0") [-v] [-o PATH] [-?]"
+  echo "  -v       verbose"
+  echo "  -o PATH  path to the repository to save downloaded dependencies at (default: current directory)"
+  echo "  -?       show this help message"
+}
 
+repository_path='.'
 verbose=0
-if [ "$1" == "-v" ]
-then
-  verbose=1
-  shift
-fi
+while [[ $# -gt 0 ]]
+do
+  case $1 in
+    "-v")
+      verbose=1
+      shift
+      ;;
+    "-o")
+      repository_path="$2"
+      shift 2
+      ;;
+    "-?")
+      usage
+      exit 0
+      ;;
+    "-*")
+      echo "Unknown option: $1" >&2
+      echo "Show help with -?" >&2
+      exit 2
+      ;;
+    "*")
+      shift
+      ;;
+  esac
+done
 
 function log_verbose {
   if [ $verbose -eq 1 ]
@@ -35,7 +61,7 @@ do
 done
 
 temp_dir=$(mktemp --directory --tmpdir haskell-airplane.download-dependencies.XXXXXX)
-trap 'rm -rf $temp_dir' EXIT
+trap 'echo removing temporary directory; rm -rf $temp_dir' EXIT
 log_verbose created temporary directory: "$temp_dir"
 
 pushd "$temp_dir"

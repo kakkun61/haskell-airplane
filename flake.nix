@@ -64,7 +64,15 @@
           };
         in
         {
-          packages.default = example-project;
+          packages = {
+            default = example-project;
+            inherit download-dependencies;
+          };
+
+          apps.download-dependencies = {
+            type = "app";
+            program = download-dependencies;
+          };
 
           formatter = pkgs.nixpkgs-fmt;
 
