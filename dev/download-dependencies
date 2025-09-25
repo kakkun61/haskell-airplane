@@ -54,26 +54,30 @@ log_verbose download-dependencies
 
 dependencies=$(cabal-plan topo --hide-builtin | grep -v ' ')
 
-log_verbose dependencies:
-for d in $dependencies
-do
-  log_verbose -e "\t$d"
-done
+if [ $verbose -eq 1 ]
+then
+  echo dependencies:
+  for d in $dependencies
+  do
+    echo -e "\t$d"
+  done
+fi
 
 temp_dir=$(mktemp --directory --tmpdir haskell-airplane.download-dependencies.XXXXXX)
-trap 'echo removing temporary directory; rm -rf $temp_dir' EXIT
+trap 'log_verbose removing temporary directory; rm -rf $temp_dir' EXIT
 log_verbose created temporary directory: "$temp_dir"
 
 pushd "$temp_dir"
+if [ $verbose -eq 0 ]
+then
+  wget='wget --quiet'
+else
+  wget='wget --no-verbose'
+fi
 for d in $dependencies
 do
   url=https://hackage.haskell.org/package/$d/$d.tar.gz
-  if [ $verbose -eq 0 ]
-  then
-    wget --quiet "$url"
-  else
-    wget --no-verbose "$url"
-  fi
+  $wget "$url"
 done
 popd
 
