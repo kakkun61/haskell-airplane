@@ -23,14 +23,12 @@
             buildPhase = ''
               runHook preBuild
 
-              # `cabal build` writes a file at a local repository,
-              # and so it must be writable.
-              cp -r --no-preserve=all $src/.local-repository .
-              # This cabal.config file declares using the local repository.
-              export CABAL_CONFIG=$src/cabal.config
               # Set a writable directory for cabal
               export CABAL_DIR=$TMPDIR/cabal
-              cabal="cabal --project-dir=$src --builddir=$TMPDIR --verbose"
+              cd $src
+              # This cabal.config file declares using the local repository.
+              export CABAL_CONFIG=./cabal.config
+              cabal="cabal --builddir=$TMPDIR --verbose"
               $cabal v2-build --only-dependencies all
               $cabal v2-build all
 
